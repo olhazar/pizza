@@ -1,10 +1,26 @@
 import React from "react";
 
-export const Sort = () => {
-  const sortTypes = ["популярности", "цене", "алфавиту"];
+interface SortType {
+  name: string;
+  sortProperty: string;
+}
+
+interface SortProps {
+  sortValue: SortType;
+  onChangeValue: (type: SortType) => void;
+}
+
+export const Sort: React.FC<SortProps> = ({ sortValue, onChangeValue }) => {
+  const sortTypes: SortType[] = [
+    { name: "популярности (DESC)", sortProperty: "rating" },
+    { name: "популярности (ASC)", sortProperty: "-rating" },
+    { name: "цене (DESC)", sortProperty: "price" },
+    { name: "цене (ASC)", sortProperty: "-price" },
+    { name: "алфавиту (DESC)", sortProperty: "title" },
+    { name: "алфавиту (ASC)", sortProperty: "-title" },
+  ];
 
   const [open, setOpen] = React.useState(false);
-  const [selectSort, setSelectSort] = React.useState("популярности");
 
   return (
     <div className="sort">
@@ -22,21 +38,23 @@ export const Sort = () => {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setOpen(!open)}>{selectSort}</span>
+        <span onClick={() => setOpen(!open)}>{sortValue.name}</span>
       </div>
       {open && (
         <div className="sort__popup">
           <ul>
-            {sortTypes.map((type, i) => (
+            {sortTypes.map((obj, i) => (
               <li
                 key={i}
                 onClick={() => {
-                  setSelectSort(type);
+                  onChangeValue(obj);
                   setOpen(!open);
                 }}
-                className={selectSort === type ? "active" : ""}
+                className={
+                  sortValue.sortProperty === obj.sortProperty ? "active" : ""
+                }
               >
-                {type}
+                {obj.name}
               </li>
             ))}
           </ul>
