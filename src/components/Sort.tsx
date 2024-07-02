@@ -1,24 +1,30 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "../redux/store";
+import { setSort } from "../redux/slices/filterSlice";
 
 interface SortType {
   name: string;
   sortProperty: string;
 }
 
-interface SortProps {
-  sortValue: SortType;
-  onChangeValue: (type: SortType) => void;
-}
+export const sortTypes: SortType[] = [
+  { name: "популярности (DESC)", sortProperty: "rating" },
+  { name: "популярности (ASC)", sortProperty: "-rating" },
+  { name: "цене (DESC)", sortProperty: "price" },
+  { name: "цене (ASC)", sortProperty: "-price" },
+  { name: "алфавиту (DESC)", sortProperty: "title" },
+  { name: "алфавиту (ASC)", sortProperty: "-title" },
+];
 
-export const Sort: React.FC<SortProps> = ({ sortValue, onChangeValue }) => {
-  const sortTypes: SortType[] = [
-    { name: "популярности (DESC)", sortProperty: "rating" },
-    { name: "популярности (ASC)", sortProperty: "-rating" },
-    { name: "цене (DESC)", sortProperty: "price" },
-    { name: "цене (ASC)", sortProperty: "-price" },
-    { name: "алфавиту (DESC)", sortProperty: "title" },
-    { name: "алфавиту (ASC)", sortProperty: "-title" },
-  ];
+export const Sort = () => {
+  const dispatch = useDispatch();
+  const sort = useSelector((state: RootState) => state.filter.sort);
+
+  const onClickSort = (obj: SortType) => {
+    dispatch(setSort(obj));
+    setOpen(false);
+  };
 
   const [open, setOpen] = React.useState(false);
 
@@ -38,7 +44,7 @@ export const Sort: React.FC<SortProps> = ({ sortValue, onChangeValue }) => {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setOpen(!open)}>{sortValue.name}</span>
+        <span onClick={() => setOpen(!open)}>{sort.name}</span>
       </div>
       {open && (
         <div className="sort__popup">
@@ -47,11 +53,10 @@ export const Sort: React.FC<SortProps> = ({ sortValue, onChangeValue }) => {
               <li
                 key={i}
                 onClick={() => {
-                  onChangeValue(obj);
-                  setOpen(!open);
+                  onClickSort(obj);
                 }}
                 className={
-                  sortValue.sortProperty === obj.sortProperty ? "active" : ""
+                  sort.sortProperty === obj.sortProperty ? "active" : ""
                 }
               >
                 {obj.name}
