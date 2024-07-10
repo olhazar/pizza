@@ -1,4 +1,4 @@
-@import '../variables';
+@import "../variables";
 
 .button {
   display: inline-block;
@@ -8,7 +8,8 @@
   min-width: 100px;
   text-align: center;
   cursor: pointer;
-  transition: background-color $duration ease-in-out, border-color $duration ease-in-out;
+  transition: background-color $duration ease-in-out,
+    border-color $duration ease-in-out;
   border: 1px solid transparent;
   @include noselect();
 
@@ -143,6 +144,13 @@
     span {
       font-weight: 600;
       font-size: 16px;
+    }
+  }
+
+  // Отключение hover для тач-устройств
+  @media (hover: none) {
+    &:hover {
+      background-color: $orange; // Возвращаем к базовому состоянию
     }
   }
 }

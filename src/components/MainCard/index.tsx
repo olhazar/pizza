@@ -1,6 +1,12 @@
 import React from "react";
 
+import { CartItem } from "../../redux/cart/types";
+import { addItem } from "../../redux/cart/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectorCartItemById } from "../../redux/cart/selectors";
+
 interface MainCardProps {
+  id: string;
   title: string;
   price: number;
   imageUrl: string;
@@ -8,17 +14,36 @@ interface MainCardProps {
   types: number[];
 }
 
+const pizzasTypes = ["тонкое", "традиционное"];
+
 export const MainCard: React.FC<MainCardProps> = ({
+  id,
   title,
   price,
   imageUrl,
   sizes,
   types,
 }) => {
-  const pizzasTypes = ["тонкое", "традиционное"];
-
   const [selectType, setSelectType] = React.useState(0);
   const [selectSize, setSelectSize] = React.useState(0);
+
+  const dispatch = useDispatch();
+  const cartItem = useSelector(selectorCartItemById(id));
+
+  const addedCount = cartItem ? cartItem.count : 0;
+
+  const onClickAdd = () => {
+    const item: CartItem = {
+      id,
+      title,
+      price,
+      imageUrl,
+      type: pizzasTypes[selectType],
+      size: sizes[selectSize],
+      count: 0,
+    };
+    dispatch(addItem(item));
+  };
 
   return (
     <div className="pizza-block-wrapper">
@@ -51,7 +76,10 @@ export const MainCard: React.FC<MainCardProps> = ({
         </div>
         <div className="pizza-block__bottom">
           <div className="pizza-block__price">{price} ₽</div>
-          <button className="button button--outline button--add">
+          <button
+            onClick={onClickAdd}
+            className="button button--outline button--add"
+          >
             <svg
               width="12"
               height="12"
@@ -65,7 +93,7 @@ export const MainCard: React.FC<MainCardProps> = ({
               />
             </svg>
             <span>Добавить</span>
-            <i>{0}</i>
+            {addedCount > 0 && <i>{addedCount}</i>}
           </button>
         </div>
       </div>
