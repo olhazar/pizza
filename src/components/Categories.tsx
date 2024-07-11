@@ -11,9 +11,9 @@ export const Categories: React.FC<CategoriesProps> = React.memo(
       "Все",
       "Мясные",
       "Сырные",
-      "Гриль",
+      "Вегетарианские",
       "Острые",
-      "Закрытые",
+      "Эксклюзивные",
     ];
 
     return (
